@@ -8,9 +8,9 @@ import ru.shumilova.githubclient.mvp.model.entity.GithubUserRepo
 import ru.shumilova.githubclient.mvp.presenter.list.IUserListPresenter
 import ru.shumilova.githubclient.mvp.view.IUserItemView
 import ru.shumilova.githubclient.mvp.view.IUsersView
+import ru.shumilova.githubclient.navigation.Screens
 import ru.terrakok.cicerone.Router
 import java.util.*
-
 
 class UsersPresenter : MvpPresenter<IUsersView?>() {
     private val usersRepo: GithubUserRepo = GithubUserRepo()
@@ -21,6 +21,7 @@ class UsersPresenter : MvpPresenter<IUsersView?>() {
 
         override fun onItemClick(view: IUserItemView) {
             Log.v(TAG, " onItemClick " + view.pos)
+            router?.navigateTo(Screens.UserScreen(users[view.pos]))
         }
 
         override fun bindView(view: IUserItemView) {
