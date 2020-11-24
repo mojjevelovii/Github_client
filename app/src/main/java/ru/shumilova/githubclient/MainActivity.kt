@@ -1,13 +1,10 @@
 package ru.shumilova.githubclient
 
 import android.os.Bundle
-import android.os.Handler
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
-import moxy.presenter.InjectPresenter
 import ru.shumilova.githubclient.mvp.presenter.MainPresenter
 import ru.shumilova.githubclient.mvp.view.IMainView
-import ru.shumilova.githubclient.ui.BackButtonListener
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
@@ -15,7 +12,7 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 class MainActivity : MvpAppCompatActivity(), IMainView {
 
     private val presenter: MainPresenter by moxyPresenter { MainPresenter() }
-    private lateinit var  navigatorHolder: NavigatorHolder
+    private lateinit var navigatorHolder: NavigatorHolder
 
     private val navigator: Navigator =
         SupportAppNavigator(this, supportFragmentManager, R.id.container)
@@ -28,7 +25,7 @@ class MainActivity : MvpAppCompatActivity(), IMainView {
 
     override fun onResumeFragments() {
         super.onResumeFragments()
-       navigatorHolder.setNavigator(navigator)
+        navigatorHolder.setNavigator(navigator)
     }
 
     override fun onPause() {
@@ -37,12 +34,6 @@ class MainActivity : MvpAppCompatActivity(), IMainView {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        for (fragment in supportFragmentManager.fragments) {
-            if (fragment is BackButtonListener && (fragment as BackButtonListener).backPressed()) {
-                return
-            }
-        }
         presenter.backClicked()
     }
 }

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_users.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
-import moxy.presenter.InjectPresenter
 import ru.shumilova.githubclient.R
 import ru.shumilova.githubclient.mvp.presenter.UsersPresenter
 import ru.shumilova.githubclient.mvp.view.IUsersView
