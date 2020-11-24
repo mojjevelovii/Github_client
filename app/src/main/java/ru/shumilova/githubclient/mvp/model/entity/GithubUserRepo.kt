@@ -1,18 +1,19 @@
 package ru.shumilova.githubclient.mvp.model.entity
 
-import java.util.*
+import io.reactivex.rxjava3.core.Single
 
 class GithubUserRepo {
-    private val repositories: List<GithubUser> =
-        listOf(
-            GithubUser("login1"),
-            GithubUser("login2"),
-            GithubUser("login3"),
-            GithubUser("login4"),
-            GithubUser("login5")
+    private val repositories: Single<List<GithubUser>> =
+        Single.just(
+            listOf(
+                GithubUser("login1"),
+                GithubUser("login2"),
+                GithubUser("login3"),
+                GithubUser("login4"),
+                GithubUser("login5")
+            )
         )
 
-
-    val users: List<GithubUser>
-        get() = Collections.unmodifiableList(repositories)
+    val users: Single<List<GithubUser>>
+        get() = repositories
 }
