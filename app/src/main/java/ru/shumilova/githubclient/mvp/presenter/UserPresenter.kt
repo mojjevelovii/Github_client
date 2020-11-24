@@ -1,16 +1,21 @@
 package ru.shumilova.githubclient.mvp.presenter
 
 import moxy.MvpPresenter
-import ru.shumilova.githubclient.GithubApplication
-import ru.shumilova.githubclient.mvp.view.IUsersView
-import ru.shumilova.githubclient.navigation.Screens
+import ru.shumilova.githubclient.mvp.model.entity.GithubUser
+import ru.shumilova.githubclient.mvp.view.IUserView
 import ru.terrakok.cicerone.Router
 
-class UserPresenter : MvpPresenter<IUsersView?>() {
-    private val router: Router? = GithubApplication.application?.router
+class UserPresenter (val router: Router, val user:GithubUser): MvpPresenter<IUserView>() {
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        user.login?.let { viewState.setLogin(it)}
+    }
 
     fun backPressed(): Boolean {
-        router?.backTo(Screens.UsersScreen())
-        return false
+        router.exit()
+        return true
     }
+
+
 }

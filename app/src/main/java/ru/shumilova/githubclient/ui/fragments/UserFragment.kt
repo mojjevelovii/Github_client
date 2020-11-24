@@ -15,7 +15,7 @@ import ru.shumilova.githubclient.ui.BackButtonListener
 
 class UserFragment : MvpAppCompatFragment(), IUserView, BackButtonListener {
 
-    private val userPresenter: UserPresenter by moxyPresenter { UserPresenter() }
+    private val userPresenter: UserPresenter by moxyPresenter { UserPresenter(userPresenter.router, userPresenter.user) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,4 +43,9 @@ class UserFragment : MvpAppCompatFragment(), IUserView, BackButtonListener {
     override fun backPressed(): Boolean {
         return userPresenter.backPressed()
     }
+
+    override fun setLogin(s: String) {
+        TODO("Not yet implemented")
+    }
+
 }
