@@ -16,6 +16,7 @@ import ru.shumilova.githubclient.mvp.model.api.ApiHolder
 import ru.shumilova.githubclient.mvp.model.repository.GithubUsersRepo
 import ru.shumilova.githubclient.mvp.presenter.UsersPresenter
 import ru.shumilova.githubclient.mvp.view.IUsersView
+import ru.shumilova.githubclient.mvp.view.image.GlideImageLoader
 import ru.shumilova.githubclient.ui.BackButtonListener
 import ru.shumilova.githubclient.ui.adapter.UserRVAdapter
 
@@ -25,7 +26,9 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackButtonListener {
 
     private val usersPresenter: UsersPresenter by moxyPresenter {
         UsersPresenter(
-            AndroidSchedulers.mainThread(), GithubUsersRepo(ApiHolder.api), GithubApplication.application?.router
+            AndroidSchedulers.mainThread(),
+            GithubUsersRepo(ApiHolder.api),
+            GithubApplication.application?.router
         )
     }
 
@@ -37,7 +40,7 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackButtonListener {
 
     override fun init() {
         layoutManager = LinearLayoutManager(requireContext())
-        adapter = UserRVAdapter(usersPresenter.usersListPresenter)
+        adapter = UserRVAdapter(usersPresenter.usersListPresenter, GlideImageLoader())
         rv_users.layoutManager = layoutManager
         rv_users.adapter = adapter
     }

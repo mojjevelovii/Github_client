@@ -21,8 +21,7 @@ class UsersPresenter(
     class UsersListPresenter : IUserListPresenter {
         val users = mutableListOf<GithubUser>()
 
-
-        override var itemClickListener: ((IUserItemView) -> Unit)? = null
+        override var itemClickListener: ((Int) -> Unit)? = null
 
         override val count: Int
             get() = users.size
@@ -30,6 +29,7 @@ class UsersPresenter(
         override fun bindView(view: IUserItemView) {
             val user = users[view.pos]
             user.login?.let { view.setLogin(it) }
+            user.avatarUrl?.let { view.loadAvatar(it) }
         }
 
         override fun onItemClick(view: IUserItemView) {
@@ -49,8 +49,8 @@ class UsersPresenter(
         viewState?.init()
         loadData()
 
-        usersListPresenter.itemClickListener = { itemView ->
-            val user = usersListPresenter.users[itemView.pos]
+        usersListPresenter.itemClickListener = { pos ->
+            val user = usersListPresenter.users[pos]
             router?.navigateTo(Screens.UserScreen(user))
         }
     }
@@ -74,7 +74,6 @@ class UsersPresenter(
         router?.exit()
         return true
     }
-
 
     companion object {
         private val TAG = UsersPresenter::class.java.simpleName
