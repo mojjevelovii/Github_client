@@ -12,12 +12,8 @@ import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.shumilova.githubclient.GithubApplication
 import ru.shumilova.githubclient.R
-import ru.shumilova.githubclient.mvp.model.api.ApiHolder
 import ru.shumilova.githubclient.mvp.model.entity.GithubUser
 import ru.shumilova.githubclient.mvp.model.entity.UserRepo
-import ru.shumilova.githubclient.mvp.model.repository.Database
-import ru.shumilova.githubclient.mvp.model.repository.GithubUsersRepo
-import ru.shumilova.githubclient.mvp.model.utils.AndroidNetworkStatus
 import ru.shumilova.githubclient.mvp.presenter.UserPresenter
 import ru.shumilova.githubclient.mvp.view.IUserView
 import ru.shumilova.githubclient.ui.BackButtonListener
@@ -29,14 +25,8 @@ class UserFragment : MvpAppCompatFragment(), IUserView, BackButtonListener {
 
     private val userPresenter: UserPresenter by moxyPresenter {
         UserPresenter(
-            GithubApplication.application!!.router,
-            GithubUsersRepo(
-                ApiHolder.api,
-                AndroidNetworkStatus(requireContext()),
-                Database.getInstance()
-            ),
             AndroidSchedulers.mainThread()
-        )
+        ).apply { GithubApplication.application.appComponent.inject(this) }
     }
 
     override fun onCreateView(
@@ -71,9 +61,7 @@ class UserFragment : MvpAppCompatFragment(), IUserView, BackButtonListener {
         }
     }
 
-    override fun backPressed(): Boolean {
-        return userPresenter.backPressed()
-    }
+    override fun backPressed() = userPresenter.backPressed()
 
     override fun setRepos(repList: List<UserRepo>) {
         adapter?.data = repList

@@ -1,21 +1,23 @@
 package ru.shumilova.githubclient.mvp.presenter
 
 import moxy.MvpPresenter
-import ru.shumilova.githubclient.GithubApplication
 import ru.shumilova.githubclient.mvp.view.IMainView
 import ru.shumilova.githubclient.navigation.Screens
 import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
 
 class MainPresenter : MvpPresenter<IMainView>() {
-    private val router: Router? = GithubApplication.application?.router
+    @Inject
+    lateinit var router: Router
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        router?.replaceScreen(Screens.UsersScreen())
+        router.replaceScreen(Screens.UsersScreen())
     }
 
     fun backClicked() {
-        router?.exit()
+        router.exit()
     }
 }

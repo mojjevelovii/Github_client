@@ -7,13 +7,16 @@ import ru.shumilova.githubclient.mvp.model.repository.IGithubUsersRepo
 import ru.shumilova.githubclient.mvp.view.IUserView
 import ru.shumilova.githubclient.navigation.Screens
 import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
 class UserPresenter(
-    private val router: Router,
-    private val userRepo: IGithubUsersRepo,
     private val mainThreadScheduler: Scheduler
 ) :
     MvpPresenter<IUserView>() {
+    @Inject
+    lateinit var router: Router
+    @Inject
+    lateinit var userRepo: IGithubUsersRepo
 
     fun backPressed(): Boolean {
         router.exit()
