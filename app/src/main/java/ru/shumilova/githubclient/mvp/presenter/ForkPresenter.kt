@@ -2,6 +2,7 @@ package ru.shumilova.githubclient.mvp.presenter
 
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.MvpPresenter
+import ru.shumilova.githubclient.mvp.model.entity.GithubUser
 import ru.shumilova.githubclient.mvp.model.repository.IGithubUsersRepo
 import ru.shumilova.githubclient.mvp.view.IForksView
 import ru.shumilova.githubclient.navigation.Screens
@@ -21,8 +22,8 @@ class ForkPresenter(
         router.navigateTo(Screens.ForksScreen(forkUrl))
     }
 
-    fun getRepos(forksUrl: String) {
-        userRepo.getRepos(forksUrl)
+    fun getRepos(user: GithubUser) {
+        userRepo.getRepos(user)
             .observeOn(mainThreadScheduler)
             .subscribe({
                 viewState.setRepos(it)

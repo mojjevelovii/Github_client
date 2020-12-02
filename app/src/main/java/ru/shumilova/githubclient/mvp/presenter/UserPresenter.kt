@@ -25,7 +25,7 @@ class UserPresenter(
     }
 
     fun getRepos(user: GithubUser) {
-        user.reposUrl?.let {
+        user?.let {
             userRepo.getRepos(it)
                 .observeOn(mainThreadScheduler)
                 .subscribe({
