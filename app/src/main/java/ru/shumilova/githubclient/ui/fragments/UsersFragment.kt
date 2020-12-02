@@ -6,12 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_users.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import ru.shumilova.githubclient.GithubApplication
 import ru.shumilova.githubclient.R
+import ru.shumilova.githubclient.mvp.model.api.ApiHolder
+import ru.shumilova.githubclient.mvp.model.repository.GithubUsersRepo
 import ru.shumilova.githubclient.mvp.presenter.UsersPresenter
 import ru.shumilova.githubclient.mvp.view.IUsersView
+import ru.shumilova.githubclient.mvp.view.image.GlideImageLoader
 import ru.shumilova.githubclient.ui.BackButtonListener
 import ru.shumilova.githubclient.ui.adapter.UserRVAdapter
 
@@ -19,13 +24,12 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackButtonListener {
     private var adapter: UserRVAdapter? = null
     private var layoutManager: RecyclerView.LayoutManager? = null
 
-    private val usersPresenter: UsersPresenter by moxyPresenter { UsersPresenter() }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val bundle: Bundle? = arguments
-        if (bundle != null) {
-            // запоминаем
-        }
+    private val usersPresenter: UsersPresenter by moxyPresenter {
+        UsersPresenter(
+            AndroidSchedulers.mainThread(),
+            GithubUsersRepo(ApiHolder.api),
+            GithubApplication.application?.router
+        )
     }
 
     override fun onCreateView(
@@ -36,7 +40,7 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackButtonListener {
 
     override fun init() {
         layoutManager = LinearLayoutManager(requireContext())
-        adapter = UserRVAdapter(usersPresenter.usersListPresenter)
+        adapter = UserRVAdapter(usersPresenter.usersListPresenter, GlideImageLoader())
         rv_users.layoutManager = layoutManager
         rv_users.adapter = adapter
     }

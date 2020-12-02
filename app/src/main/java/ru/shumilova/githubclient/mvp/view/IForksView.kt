@@ -5,6 +5,6 @@ import moxy.viewstate.strategy.alias.AddToEndSingle
 import ru.shumilova.githubclient.mvp.model.entity.UserRepo
 
 @AddToEndSingle
-interface IUserView : MvpView {
+interface IForksView : MvpView{
     fun setRepos(repList: List<UserRepo>)
 }

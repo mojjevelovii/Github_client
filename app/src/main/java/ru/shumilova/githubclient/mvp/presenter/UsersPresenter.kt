@@ -1,62 +1,68 @@
 package ru.shumilova.githubclient.mvp.presenter
 
 import android.util.Log
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import moxy.MvpPresenter
-import ru.shumilova.githubclient.GithubApplication
 import ru.shumilova.githubclient.mvp.model.entity.GithubUser
-import ru.shumilova.githubclient.mvp.model.entity.GithubUserRepo
+import ru.shumilova.githubclient.mvp.model.repository.IGithubUsersRepo
 import ru.shumilova.githubclient.mvp.presenter.list.IUserListPresenter
 import ru.shumilova.githubclient.mvp.view.IUserItemView
 import ru.shumilova.githubclient.mvp.view.IUsersView
 import ru.shumilova.githubclient.navigation.Screens
 import ru.terrakok.cicerone.Router
-import java.util.*
 
-class UsersPresenter : MvpPresenter<IUsersView?>() {
-    private val usersRepo: GithubUserRepo = GithubUserRepo()
-    private val router: Router? = GithubApplication.application?.router
-    private val compositeDisposable = CompositeDisposable()
+class UsersPresenter(
+    private val mainThreadScheduler: Scheduler,
+    private val userRepo: IGithubUsersRepo,
+    private val router: Router?
+) : MvpPresenter<IUsersView>() {
 
-    inner class UsersListPresenter : IUserListPresenter {
-        val users: MutableList<GithubUser> = ArrayList()
+    class UsersListPresenter : IUserListPresenter {
+        val users = mutableListOf<GithubUser>()
 
-        override fun onItemClick(view: IUserItemView) {
-            Log.v(TAG, " onItemClick " + view.pos)
-            router?.navigateTo(Screens.UserScreen(users[view.pos]))
-        }
-
-        override fun bindView(view: IUserItemView) {
-            val user: GithubUser = users[view.pos]
-            view.setLogin(user.login)
-        }
+        override var itemClickListener: ((Int) -> Unit)? = null
 
         override val count: Int
             get() = users.size
+
+        override fun bindView(view: IUserItemView) {
+            val user = users[view.pos]
+            user.login?.let { view.setLogin(it) }
+            user.avatarUrl?.let { view.loadAvatar(it) }
+        }
+
+        override fun onItemClick(view: IUserItemView) {
+            if (VERBOSE) {
+                Log.v(TAG, " onItemClick " + view.pos)
+            }
+
+        }
+
     }
 
     val usersListPresenter = UsersListPresenter()
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState?.init()
         loadData()
+
+        usersListPresenter.itemClickListener = { pos ->
+            val user = usersListPresenter.users[pos]
+            router?.navigateTo(Screens.UserScreen(user))
+        }
     }
 
     private fun loadData() {
-        val usersDisposable = usersRepo.users
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { users ->
-                    usersListPresenter.users.addAll(users)
-                    viewState?.updateList()
-                },
-                { error -> error.printStackTrace() }
-            )
-        compositeDisposable.add(usersDisposable)
+        userRepo.getUsers()
+            .observeOn(mainThreadScheduler)
+            .subscribe({ userRepo ->
+                usersListPresenter.users.clear()
+                usersListPresenter.users.addAll(userRepo)
+                viewState.updateList()
+            }, { println("Error: ${it.message}") })
     }
 
     override fun onDestroy() {

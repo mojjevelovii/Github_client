@@ -2,10 +2,10 @@ package ru.shumilova.githubclient.navigation
 
 import androidx.fragment.app.Fragment
 import ru.shumilova.githubclient.mvp.model.entity.GithubUser
+import ru.shumilova.githubclient.ui.fragments.ForksFragment
 import ru.shumilova.githubclient.ui.fragments.UserFragment
 import ru.shumilova.githubclient.ui.fragments.UsersFragment
 import ru.terrakok.cicerone.android.support.SupportAppScreen
-
 
 class Screens {
     class UsersScreen : SupportAppScreen() {
@@ -14,5 +14,9 @@ class Screens {
 
     class UserScreen(private val user: GithubUser) : SupportAppScreen() {
         override fun getFragment(): Fragment? = UserFragment.getInstance(user)
+    }
+
+    class ForksScreen(private val forkUrl: String) : SupportAppScreen() {
+        override fun getFragment(): Fragment? = ForksFragment.newInstance(forkUrl)
     }
 }
