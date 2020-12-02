@@ -15,5 +15,6 @@ data class UserRepo(
 
     @SerializedName("forks_url")
     @Expose
-    val forksUrl: String? = null
+    val forksUrl: String? = null,
+    val forksCount: Int = 0
 ) : Parcelable

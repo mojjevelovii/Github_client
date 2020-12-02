@@ -13,8 +13,11 @@ import moxy.ktx.moxyPresenter
 import ru.shumilova.githubclient.GithubApplication
 import ru.shumilova.githubclient.R
 import ru.shumilova.githubclient.mvp.model.api.ApiHolder
+import ru.shumilova.githubclient.mvp.model.entity.GithubUser
 import ru.shumilova.githubclient.mvp.model.entity.UserRepo
+import ru.shumilova.githubclient.mvp.model.repository.Database
 import ru.shumilova.githubclient.mvp.model.repository.GithubUsersRepo
+import ru.shumilova.githubclient.mvp.model.utils.AndroidNetworkStatus
 import ru.shumilova.githubclient.mvp.presenter.ForkPresenter
 import ru.shumilova.githubclient.mvp.view.IForksView
 import ru.shumilova.githubclient.ui.BackButtonListener
@@ -27,7 +30,11 @@ class ForksFragment : MvpAppCompatFragment(), IForksView, BackButtonListener {
     private val forkPresenter: ForkPresenter by moxyPresenter {
         ForkPresenter(
             GithubApplication.application!!.router,
-            GithubUsersRepo(ApiHolder.api),
+            GithubUsersRepo(
+                ApiHolder.api,
+                AndroidNetworkStatus(requireContext()),
+                Database.getInstance()
+            ),
             AndroidSchedulers.mainThread()
         )
     }
@@ -41,9 +48,9 @@ class ForksFragment : MvpAppCompatFragment(), IForksView, BackButtonListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val forksUrl = arguments?.getString(KEY)
+        val user = arguments?.getParcelable<GithubUser>(KEY)
         init()
-        forksUrl?.let { forkPresenter.getRepos(it) }
+        user?.let { forkPresenter.getRepos(user) }
     }
 
     private fun init() {

@@ -13,7 +13,9 @@ import moxy.ktx.moxyPresenter
 import ru.shumilova.githubclient.GithubApplication
 import ru.shumilova.githubclient.R
 import ru.shumilova.githubclient.mvp.model.api.ApiHolder
+import ru.shumilova.githubclient.mvp.model.repository.Database
 import ru.shumilova.githubclient.mvp.model.repository.GithubUsersRepo
+import ru.shumilova.githubclient.mvp.model.utils.AndroidNetworkStatus
 import ru.shumilova.githubclient.mvp.presenter.UsersPresenter
 import ru.shumilova.githubclient.mvp.view.IUsersView
 import ru.shumilova.githubclient.mvp.view.image.GlideImageLoader
@@ -27,7 +29,11 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackButtonListener {
     private val usersPresenter: UsersPresenter by moxyPresenter {
         UsersPresenter(
             AndroidSchedulers.mainThread(),
-            GithubUsersRepo(ApiHolder.api),
+            GithubUsersRepo(
+                ApiHolder.api,
+                AndroidNetworkStatus(requireContext()),
+                Database.getInstance()
+            ),
             GithubApplication.application?.router
         )
     }

@@ -1,6 +1,7 @@
 package ru.shumilova.githubclient
 
 import android.app.Application
+import ru.shumilova.githubclient.mvp.model.repository.Database
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
@@ -10,6 +11,7 @@ class GithubApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         application = this
+        Database.create(this)
     }
 
     val router: Router

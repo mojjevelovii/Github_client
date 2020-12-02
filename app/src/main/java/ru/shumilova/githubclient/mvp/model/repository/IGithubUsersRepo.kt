@@ -8,5 +8,5 @@ import ru.shumilova.githubclient.mvp.model.entity.UserRepo
 interface IGithubUsersRepo {
     fun getUsers(): Single<List<GithubUser>>
 
-    fun getRepos(repoUrl: String): @NonNull Single<List<UserRepo>>
+    fun getRepos(user: GithubUser): @NonNull Single<List<UserRepo>>
 }
