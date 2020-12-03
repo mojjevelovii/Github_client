@@ -12,7 +12,8 @@ import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.shumilova.githubclient.GithubApplication
 import ru.shumilova.githubclient.R
-import ru.shumilova.githubclient.mvp.model.api.ApiHolder
+import ru.shumilova.githubclient.mvp.model.entity.ForksResponse
+import ru.shumilova.githubclient.mvp.model.entity.GithubUser
 import ru.shumilova.githubclient.mvp.model.entity.UserRepo
 import ru.shumilova.githubclient.mvp.model.repository.GithubUsersRepo
 import ru.shumilova.githubclient.mvp.presenter.ForkPresenter
@@ -26,10 +27,8 @@ class ForksFragment : MvpAppCompatFragment(), IForksView, BackButtonListener {
 
     private val forkPresenter: ForkPresenter by moxyPresenter {
         ForkPresenter(
-            GithubApplication.application!!.router,
-            GithubUsersRepo(ApiHolder.api),
             AndroidSchedulers.mainThread()
-        )
+        ).apply { GithubApplication.application.appComponent.inject(this) }
     }
 
     override fun onCreateView(
@@ -41,9 +40,9 @@ class ForksFragment : MvpAppCompatFragment(), IForksView, BackButtonListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val forksUrl = arguments?.getString(KEY)
+        val userRepo = arguments?.getParcelable<UserRepo>(KEY)
         init()
-        forksUrl?.let { forkPresenter.getRepos(it) }
+        userRepo?.let { forkPresenter.getRepos(it) }
     }
 
     private fun init() {
@@ -53,22 +52,25 @@ class ForksFragment : MvpAppCompatFragment(), IForksView, BackButtonListener {
         rv_forks.adapter = adapter
     }
 
-    companion object {
-        private const val KEY = "key"
 
-        fun newInstance(forksUrl: String) =
-            ForksFragment().apply {
-                val bundle = Bundle()
-                bundle.putString(KEY, forksUrl)
-                arguments = bundle
-            }
-    }
 
-    override fun setRepos(repList: List<UserRepo>) {
-        adapter?.data = repList
+    override fun setRepos(repList: ForksResponse) {
+        adapter?.data = repList.forks
+        tv_forks_quantity.text = repList.forksCount.toString()
     }
 
     override fun backPressed(): Boolean {
         return forkPresenter.backPressed()
+    }
+
+    companion object {
+        private const val KEY = "key"
+
+        fun newInstance(repo: UserRepo) =
+            ForksFragment().apply {
+                val bundle = Bundle()
+                bundle.putParcelable(KEY, repo)
+                arguments = bundle
+            }
     }
 }

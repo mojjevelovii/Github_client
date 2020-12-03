@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.item_repo.view.*
 import ru.shumilova.githubclient.R
 import ru.shumilova.githubclient.mvp.model.entity.UserRepo
 
-class ReposRVAdapter(private val listener: (String) -> Unit) :
+class ReposRVAdapter(private val listener: (UserRepo) -> Unit) :
     RecyclerView.Adapter<ReposRVAdapter.RepoViewHolder>() {
     var data: List<UserRepo> = emptyList()
         set(value) {
@@ -33,7 +33,7 @@ class ReposRVAdapter(private val listener: (String) -> Unit) :
         LayoutContainer {
         fun bind(userRepo: UserRepo) {
             containerView.tv_repo_name.text = userRepo.name
-            containerView.setOnClickListener { userRepo.forksUrl?.let { listener.invoke(it) } }
+            containerView.setOnClickListener { listener.invoke(userRepo) }
         }
     }
 }

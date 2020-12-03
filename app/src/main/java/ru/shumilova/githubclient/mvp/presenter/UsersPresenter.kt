@@ -11,12 +11,16 @@ import ru.shumilova.githubclient.mvp.view.IUserItemView
 import ru.shumilova.githubclient.mvp.view.IUsersView
 import ru.shumilova.githubclient.navigation.Screens
 import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
 class UsersPresenter(
-    private val mainThreadScheduler: Scheduler,
-    private val userRepo: IGithubUsersRepo,
-    private val router: Router?
+    private val mainThreadScheduler: Scheduler
 ) : MvpPresenter<IUsersView>() {
+
+    @Inject
+    lateinit var userRepo: IGithubUsersRepo
+    @Inject
+    lateinit var router: Router
 
     class UsersListPresenter : IUserListPresenter {
         val users = mutableListOf<GithubUser>()
