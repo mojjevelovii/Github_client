@@ -3,6 +3,7 @@ package ru.shumilova.githubclient.mvp.presenter
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.MvpPresenter
 import ru.shumilova.githubclient.mvp.model.entity.GithubUser
+import ru.shumilova.githubclient.mvp.model.entity.UserRepo
 import ru.shumilova.githubclient.mvp.model.repository.IGithubUsersRepo
 import ru.shumilova.githubclient.mvp.view.IUserView
 import ru.shumilova.githubclient.navigation.Screens
@@ -23,8 +24,8 @@ class UserPresenter(
         return true
     }
 
-    fun openForks(forkUrl: String) {
-        router.navigateTo(Screens.ForksScreen(forkUrl))
+    fun openForks(repo: UserRepo) {
+        router.navigateTo(Screens.ForksScreen(repo))
     }
 
     fun getRepos(user: GithubUser) {

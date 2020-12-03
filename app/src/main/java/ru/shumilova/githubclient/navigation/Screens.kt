@@ -2,6 +2,7 @@ package ru.shumilova.githubclient.navigation
 
 import androidx.fragment.app.Fragment
 import ru.shumilova.githubclient.mvp.model.entity.GithubUser
+import ru.shumilova.githubclient.mvp.model.entity.UserRepo
 import ru.shumilova.githubclient.ui.fragments.ForksFragment
 import ru.shumilova.githubclient.ui.fragments.UserFragment
 import ru.shumilova.githubclient.ui.fragments.UsersFragment
@@ -16,7 +17,7 @@ class Screens {
         override fun getFragment(): Fragment? = UserFragment.getInstance(user)
     }
 
-    class ForksScreen(private val forkUrl: String) : SupportAppScreen() {
-        override fun getFragment(): Fragment? = ForksFragment.newInstance(forkUrl)
+    class ForksScreen(private val repo: UserRepo) : SupportAppScreen() {
+        override fun getFragment(): Fragment? = ForksFragment.newInstance(repo)
     }
 }

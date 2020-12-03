@@ -45,7 +45,7 @@ class UserFragment : MvpAppCompatFragment(), IUserView, BackButtonListener {
 
     private fun init() {
         layoutManager = LinearLayoutManager(requireContext())
-        adapter = ReposRVAdapter { url -> userPresenter.openForks(url) }
+        adapter = ReposRVAdapter { repo -> userPresenter.openForks(repo) }
         rv_repos.layoutManager = layoutManager
         rv_repos.adapter = adapter
     }

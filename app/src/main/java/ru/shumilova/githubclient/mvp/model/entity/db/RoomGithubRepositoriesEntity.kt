@@ -7,13 +7,13 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "repo",
     foreignKeys = [ForeignKey(
-        entity = RoomGithubUsersCache::class,
+        entity = RoomGithubUserEntity::class,
         parentColumns = ["uid"],
         childColumns = ["userId"],
         onDelete = ForeignKey.CASCADE
     )]
 )
-class RoomGithubRepositoriesCache(
+data class RoomGithubRepositoriesEntity(
     @PrimaryKey
     var id: String = "",
     var name: String = "",

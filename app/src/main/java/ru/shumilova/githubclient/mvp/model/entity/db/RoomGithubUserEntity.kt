@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "user")
-class RoomGithubUsersCache(
+data class RoomGithubUserEntity(
     @PrimaryKey
     val uid: String = "",
     var login: String = "",

@@ -12,8 +12,10 @@ import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.shumilova.githubclient.GithubApplication
 import ru.shumilova.githubclient.R
+import ru.shumilova.githubclient.mvp.model.entity.ForksResponse
 import ru.shumilova.githubclient.mvp.model.entity.GithubUser
 import ru.shumilova.githubclient.mvp.model.entity.UserRepo
+import ru.shumilova.githubclient.mvp.model.repository.GithubUsersRepo
 import ru.shumilova.githubclient.mvp.presenter.ForkPresenter
 import ru.shumilova.githubclient.mvp.view.IForksView
 import ru.shumilova.githubclient.ui.BackButtonListener
@@ -38,9 +40,9 @@ class ForksFragment : MvpAppCompatFragment(), IForksView, BackButtonListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val user = arguments?.getParcelable<GithubUser>(KEY)
+        val userRepo = arguments?.getParcelable<UserRepo>(KEY)
         init()
-        user?.let { forkPresenter.getRepos(user) }
+        userRepo?.let { forkPresenter.getRepos(it) }
     }
 
     private fun init() {
@@ -50,22 +52,25 @@ class ForksFragment : MvpAppCompatFragment(), IForksView, BackButtonListener {
         rv_forks.adapter = adapter
     }
 
-    companion object {
-        private const val KEY = "key"
 
-        fun newInstance(forksUrl: String) =
-            ForksFragment().apply {
-                val bundle = Bundle()
-                bundle.putString(KEY, forksUrl)
-                arguments = bundle
-            }
-    }
 
-    override fun setRepos(repList: List<UserRepo>) {
-        adapter?.data = repList
+    override fun setRepos(repList: ForksResponse) {
+        adapter?.data = repList.forks
+        tv_forks_quantity.text = repList.forksCount.toString()
     }
 
     override fun backPressed(): Boolean {
         return forkPresenter.backPressed()
+    }
+
+    companion object {
+        private const val KEY = "key"
+
+        fun newInstance(repo: UserRepo) =
+            ForksFragment().apply {
+                val bundle = Bundle()
+                bundle.putParcelable(KEY, repo)
+                arguments = bundle
+            }
     }
 }
